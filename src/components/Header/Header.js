@@ -1,0 +1,39 @@
+import React from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+
+import logo from '../../images/logo.svg';
+import './Header.css';
+
+function Header(props) {
+  const location = useLocation();
+  return (
+    <header className={`header ${(!props.loggedIn || location.pathname ==='/') ? ('header__auth') : ''}`}>     
+    {props.loggedIn ?
+      <nav className="header__menu">
+        <Link to="/">
+          <img className="header__logo" alt="Логотип" src={logo} /> 
+        </Link>
+        <div className="header__links">
+          <NavLink to="/movies" activeClassName="header__active-link" className=" header__link">Фильмы</NavLink>  
+          <NavLink to="/saved-movies" activeClassName="header__active-link" className="header__link">Сохранённые фильмы</NavLink> 
+        </div>
+        <div className="header__lk">
+          <NavLink to="/profile" activeClassName="header__active-link" className="header__link ">Аккаунт</NavLink>   
+        </div>
+    </nav>
+    : <nav className="header__menu">
+        <Link to="/">
+          <img className="header__logo" alt="Логотип" src={logo} /> 
+        </Link>
+        <div className="header__menu-auth">
+        <NavLink to="/signup" activeClassName="header__active-link-auth" className="header__link header__link-auth">Регистрация</NavLink>
+        <NavLink to="/signin" activeClassName="header__active-link-auth" className="header__link header__link-auth">Войти</NavLink>
+        </div>
+          </nav>}
+        
+    </header>    
+  );
+
+}
+
+export default Header;
