@@ -1,0 +1,12 @@
+.section__title {
+  max-width: 90%;
+  margin: auto;
+  padding: 0;
+  border-bottom: 1px solid #000;
+  box-shadow: 0px 4px 4px -4px rgba(0, 0, 0, 0.25);
+  font-weight: normal;
+  font-size: 22px;
+  line-height: 27px;
+  letter-spacing: -0.04em;
+  padding-bottom: 23px; 
+}
