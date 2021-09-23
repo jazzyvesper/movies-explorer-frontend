@@ -1,11 +1,13 @@
 import React from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useRouteMatch  } from 'react-router-dom';
 
 import logo from '../../images/logo.svg';
 import './Header.css';
+import Movies from "../Movies/Movies";
 
 function Header(props) {
   const location = useLocation();
+  const { path, url } = useRouteMatch();
   return (
     <header className={`header ${(!props.loggedIn || location.pathname ==='/') ? ('header__auth') : ''}`}>     
     {props.loggedIn ?
