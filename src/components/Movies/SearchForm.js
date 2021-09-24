@@ -4,7 +4,7 @@ import './SearchForm.css';
 function SearchForm(props) {
   return (
     <section className="form__conteiner">
-      <form className="search__form" action="" method="get">
+      <form className="search__form">
         <fieldset className="search__form_type_films">
           <input className="search__input"  name="search" placeholder="Фильм" type="search" id="search" />
           <span className="search-error entrance__item-error"></span>

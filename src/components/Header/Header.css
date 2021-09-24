@@ -4,7 +4,6 @@
   margin: auto;
   display: flex;
   justify-content: space-between;
-  border: 1px red solid;
   align-items: center;
   padding: 0 70px;
 }
@@ -27,8 +26,16 @@
   color: #000;
 }
 
+
+
 .header__active-link {
   font-weight: 500; 
+}
+
+.header__link_type_profile {
+  padding: 8px 20px;
+  background-color: #F9F9F9;
+  border-radius: 20px;
 }
 
 .header-menu-auth {
@@ -50,4 +57,10 @@
   border-radius: 3px;
   color: #000;
   font-weight: 500;
+}
+
+.header__link_type_sign {
+    width: 410px;
+    margin: auto;
+    padding: 73px 0 70px;
 }

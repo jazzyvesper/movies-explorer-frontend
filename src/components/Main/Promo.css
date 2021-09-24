@@ -1,17 +1,15 @@
 .promo {
   max-width: 100%;
   margin: auto;
-  border: 1px red solid;
   background-color: #073042;
   color: #fff;
+  padding: 75px 0 75px;
 }
 
 .promo__banner {
   max-width: 90%;
   margin: auto;
   display: flex;
-  margin-top:75px;
-  margin-bottom: 75px;
 }
 
 .promo__info {
@@ -57,4 +55,31 @@
   max-width: 310px;
   height: 304px;
   margin-left: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .promo__banner {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+  .promo__image {
+    margin: auto;
+  }
+
+  .promo__title {
+    font-weight: normal;
+    font-size: 40px;
+    line-height: 50px;
+    text-align: center;
+  }
+
+  .promo__info {
+    align-items: center;
+  }
+  
+  .promo__text {
+    text-align: center;
+  }
 }

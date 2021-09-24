@@ -1,0 +1,31 @@
+.cards__conteiner {
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  max-width: 90%;
+  padding-top: 70px;
+  justify-content: space-between;
+}
+
+.cards__next {
+  padding: 18px 0 80px;
+  max-width: 100%;
+  margin: auto;
+}
+
+.cards__button {
+  height: 36px;
+  width: 320px;
+  border: 0;
+  background: #F9F9F9;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  transition: opacity .3s;
+}
+
+.cards__button:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}

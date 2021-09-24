@@ -9,7 +9,7 @@ function Header(props) {
   const location = useLocation();
   const { path, url } = useRouteMatch();
   return (
-    <header className={`header ${(!props.loggedIn || location.pathname ==='/') ? ('header__auth') : ''}`}>     
+    <header className={`header ${(!props.loggedIn && location.pathname ==='/') ? ('header__auth') : ''}`}>     
     {props.loggedIn ?
       <nav className="header__menu">
         <Link to="/">
@@ -20,9 +20,13 @@ function Header(props) {
           <NavLink to="/saved-movies" activeClassName="header__active-link" className="header__link">Сохранённые фильмы</NavLink> 
         </div>
         <div className="header__lk">
-          <NavLink to="/profile" activeClassName="header__active-link" className="header__link ">Аккаунт</NavLink>   
+          <NavLink to="/profile" activeClassName="header__active-link" className="header__link header__link_type_profile">Аккаунт</NavLink>   
         </div>
-    </nav>
+    </nav> 
+    : (!props.loggedIn && (location.pathname ==='/signup' || location.pathname ==='/signin') ) ?
+      <Link className="header__link_type_sign" to="/">
+        <img className="header__logo" alt="Логотип" src={logo} /> 
+      </Link>
     : <nav className="header__menu">
         <Link to="/">
           <img className="header__logo" alt="Логотип" src={logo} /> 
