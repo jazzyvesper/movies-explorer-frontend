@@ -8,10 +8,13 @@ function MoviesCardList(props) {
 
   }
   return (
-    <section className="cards__conteiner"> 
+    <section className="cards"> 
+    <div className="cards__conteiner">
       {dataCardList.map((card) => (
-        <MoviesCard card={card} />
+        //key прописан временно пока не придут с сервера id
+        <MoviesCard card={card} key={card.name}/>
        ))}
+    </div>
       <div className="cards__next">
         <button className="cards__button" onClick={handleClick}>Ещё</button>  
       </div>

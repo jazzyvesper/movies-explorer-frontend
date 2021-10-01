@@ -1,12 +1,17 @@
 import React from 'react';
 import './Profile.css';
-import Form from '../Form/Form';
+import ProfileForm from '../Form/ProfileForm';
 
 function Profile(props) {
   return (
     <section className="profile">
-      <Form
-      title="Привет, Виталий!" />
+      <ProfileForm 
+      name="Виталий"
+      email="pochta@yandex.ru"
+      logOut={props.logOut}
+      errorText={props.errorText}
+       />
+      
     </section>
   ) 
 }

@@ -5,12 +5,25 @@ import MoviesCardList from './MoviesCardList';
 import Preloader from './Preloader';
 
 function Movies(props) {
+  const [search, setSearch] = React.useState(false)
+
+  //Открытие прелоадера при нажатии найти фильмы
+  function handlerOpen() {
+    setSearch(true)
+  }
+  
+  //закрытие прелоадера после получения данных с фильмам.
+  //!Сейчас исчезает при перезагрузки страницы!
+  function handleClose() {
+    setSearch(false)
+  }
+ 
   return (
-    <section>
-      <SearchForm />
-      <Preloader />
+    <main className="content">
+      <SearchForm search={handlerOpen} />
+      <Preloader isOpen={search} onClose={handleClose}/>
       <MoviesCardList />
-    </section>
+    </main>
   ) 
 }
 

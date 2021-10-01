@@ -25,6 +25,13 @@
   list-style: none;
   border-bottom: 1px solid rgba(232, 232, 232, 1);
   margin-bottom: 20px;
+  padding-bottom: 19px;
+}
+
+.portfolio__item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom:none;
 }
 
 .portfolio__subtitle {
@@ -34,10 +41,39 @@
   font-size: 30px;
   line-height: 50px;
   letter-spacing: -0.04em;
-  padding-bottom: 19px;
+  text-decoration: none;
+  color: #000;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .portfolio__icon {
   max-width: 29px;
   object-fit: contain;
+}
+
+@media screen and (max-width: 850px) {
+  .portfolio__subtitle {
+    font-size: 28px;
+  }
+
+  .portfolio__icon {
+    max-width: 29px;
+  }
+}
+
+@media screen and (max-width: 502px) {
+  .portfolio__title {
+    font-size: 14px;
+  }
+  
+  .portfolio__subtitle {
+    font-size: 18px;
+    line-height: 28px;
+  }
+
+  .portfolio__icon {
+    max-width: 12px;
+  }
 }

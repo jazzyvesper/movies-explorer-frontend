@@ -1,7 +1,7 @@
 import React from 'react';
 import './AboutMe.css';
 import photo from '../../images/photo.jpg';
-import { Link } from 'react-router-dom';
+
 
 function AboutMe(props) {
   return (
@@ -17,8 +17,8 @@ function AboutMe(props) {
           С 2015 года работал в компании «СКБ Контур».
           После того, как прошёл курс по веб-разработке, начал заниматься фриланс-заказами и ушёл с постоянной работы.</p>
           <nav className="about__links">
-            <Link className="about__link" to="#">Facebook</Link>
-            <Link className="about__link" to="#">Github</Link>
+            <a className="about__link section__link" href="https://www.facebook.com/svetlana.urusova.3" target="_blank" rel="noreferrer">Facebook</a>
+            <a className="about__link section__link" href="https://github.com/jazzyvesper" target="_blank" rel="noreferrer">Github</a>
           </nav>
         </div>
         <img className="about__image" src={photo} alt="Фотография" />

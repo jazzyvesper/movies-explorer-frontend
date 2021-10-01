@@ -4,21 +4,23 @@ import { useLocation } from 'react-router-dom';
 
 function MoviesCard(props) {
   const location = useLocation();
-  const [save, setSave] = React.useState(false);
+  const [isSave, setIsSave] = React.useState(false);
+
   function handleSaveClick() {
-    setSave(true);
-  console.log(save)
+    setIsSave(true);
   }
+
+
 
   return (
     <article className="card">
       <img className="card__image" src={props.card.img} alt={props.card.name} />
       {location.pathname ==='/saved-movies' ?
-      <button type="button" className="card__button_type_close" aria-label="Галочка"></button>
+      <button type="button" className="card__button_type_close section__link" aria-label="Закрыть"></button>
       :
       <>
-      <button type="button" className="card__button_type_save" aria-label="Сохранить" onClick={handleSaveClick}>Сохранить</button>
-      <button type="button" className={`card__button ${save ? ('card__button_type_ok') : ''}`} aria-label="Галочка"></button>
+      <button type="button" className={`card__button_type_save section__link ${isSave ? ('card__button_none') : ''}`} aria-label="Сохранить" onClick={handleSaveClick}>Сохранить</button>
+      <button type="button" className={`card__button section__link ${isSave ? ('card__button_type_ok') : ''}`} aria-label="Галочка"></button>
       </>
       }
       <div className="card__info">
