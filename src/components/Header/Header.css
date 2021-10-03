@@ -1,0 +1,19 @@
+.header {
+  max-width: 100%;
+  height: 74px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.header__auth {
+  background-color: #073042;
+  color: #fff;
+}
+
+.header_sign {
+  height: auto;
+  margin: 70px auto 40px;
+  max-width: 410px;
+}

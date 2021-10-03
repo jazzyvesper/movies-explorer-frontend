@@ -1,0 +1,125 @@
+.profile__info {
+  max-width: 410px;
+  margin: 74px auto 70px;
+  text-align: center
+}
+
+.profile__form__info {
+  display: flex;
+  flex-flow: column;
+  padding: 0;
+  margin: 0;
+  border: none;
+  margin-bottom: 220px;
+}
+
+.profile__form__item {
+  display: block;
+  text-align: right;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 13px;
+  color: #000000;
+}
+
+.profile__form__label {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 13px;
+  border-bottom: 1px solid #E8E8E8;
+  margin-bottom: 17px;  
+}
+
+.profile__form__label:last-child {
+  border-bottom:none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile__form__item::placeholder {
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 13px;
+  color: #000000;
+}
+
+.profile__form__submit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content:center;
+}
+
+.profile__form__button {
+  font-size: 13px;
+  line-height: 16px;
+  border: none;
+  background-color: transparent;
+  transition: opacity 0.3s;
+}
+
+.profile__form__button_type_edit {
+  margin-bottom: 16px;
+  font-weight: normal;
+}
+
+.profile__form__button_type_signout {
+  font-weight: 500;
+  color: #FF3055;
+}
+
+.profile__form__button_type_save {
+  background: #3456F3;
+  border-radius: 3px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  padding: 13px 168px;
+  border: none;
+  text-align: center;
+  color: #FFFFFF;
+}
+
+.profile__form__button:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.profile__form__button_type_save:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+
+.profile__title {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 124px;
+  }
+
+
+@media screen and (max-width:502px) {
+  .profile__info {
+    max-width: 260px;
+    margin: 70px auto 40px;
+  }
+
+  .profile__title {
+    margin-bottom: 80px;
+  }
+    
+  .profile__form__info {
+    margin-bottom: 379px;
+  }
+}

@@ -1,0 +1,103 @@
+.card {
+  position: relative;
+  width: 100%;
+}
+
+.card__img-block {
+  position: relative;
+}
+
+.card__image {
+  border-radius: 6px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.card__button {
+  display: none;
+}
+
+.card__button_type_save {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  width: 72px;
+  height: 21px;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 9px;
+  border: 0;
+  border-radius: 10px;
+}
+
+.card__button_none {
+  display: none;
+}
+.card__button_type_ok {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  width: 21px;
+  height: 21px;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 9px;
+  background-image: url(../../images/save.svg);
+  border: 0;
+  background-color: inherit;
+  display: flex;
+}
+
+.card__button_type_close {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  width: 21px;
+  height: 21px;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 9px;
+  background-image: url(../../images/button-close.svg);
+  border: 0;
+  background-color: inherit;
+  display: block;
+  transition: opacity 0.3s;
+}
+
+.card__button_type_close:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+
+.card__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding: 0 10px;
+}
+
+.card__title {
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.card__time {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 10px;
+  color: #A0A0A0;
+}
+
+@media screen and (max-width: 502px) {
+  .card__title {
+    font-size: 12px;
+    line-height: 15px;
+  }
+}
