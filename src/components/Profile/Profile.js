@@ -6,8 +6,8 @@ function Profile(props) {
   return (
     <section className="profile">
       <ProfileForm 
-      name="Виталий"
-      email="pochta@yandex.ru"
+      name={props.name}
+      email={props.email}
       logOut={props.logOut}
       errorText={props.errorText}
        />

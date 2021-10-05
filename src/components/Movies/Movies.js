@@ -8,9 +8,9 @@ function Movies(props) {
   const [search, setSearch] = React.useState(false)
 
   //Открытие прелоадера при нажатии найти фильмы
-  function handlerOpen() {
+  /*function handlerOpen() {
     setSearch(true)
-  }
+  }*/
   
   //закрытие прелоадера после получения данных с фильмам.
   //!Сейчас исчезает при перезагрузки страницы!
@@ -20,9 +20,16 @@ function Movies(props) {
  
   return (
     <main className="content">
-      <SearchForm search={handlerOpen} />
-      <Preloader isOpen={search} onClose={handleClose}/>
-      <MoviesCardList />
+      <SearchForm 
+      onSearch={props.onSearch}
+       />
+      <Preloader 
+      isOpen={props.isOpen} onClose={handleClose}/>
+      <MoviesCardList
+       movies={props.movies}
+       onMovieSave={props.onMovieSave}
+       isSave={props.isSave}
+        />
     </main>
   ) 
 }
