@@ -3,8 +3,19 @@ import './MoviesCardList.css';
 import MoviesCard from './MoviesCard'
 
 function MoviesCardList(props) {
-  function handleClick() {
-
+  const [cardsPage, setCardsPage] = React.useState(0);
+const [nextCards, setNextCards] = React.useState(0);
+  function changeCardList() {
+    if(window.innerWidth > 768) {
+      setCardsPage(3);
+      setNextCards(3);
+    } else if(window.innerWidth > 520 && window.innerWidth <= 768) {
+      setCardsPage(2);
+      setNextCards(2);
+    } else if(window.innerWidth < 520) {
+      setCardsPage(1);
+      setNextCards(1);
+    }
   }
   return (
     <section className="cards"> 
