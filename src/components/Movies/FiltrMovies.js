@@ -1,8 +1,7 @@
-import React from 'react';
 function FiltrMovies() {
 
 //1. фильтр по поисковому слову
-function filtrKey (arr, data) {
+  function filtrKey (arr, data) {
     const NewArray = arr.filter((item) => {
      return item.nameRU.includes(data.keyword)
     })
@@ -10,7 +9,7 @@ function filtrKey (arr, data) {
   }
 
 //2. фильтр слово + range
-function filtrKeyAndRange (arr, data) {
+  function filtrKeyAndRange (arr, data) {
     console.log(data)
     const NewArray = arr.filter((item) => {
       return item.nameRU.includes(data.keyword) && item.duration < 40
@@ -18,7 +17,7 @@ function filtrKeyAndRange (arr, data) {
   return NewArray
   }
 //3. фильтр при клике по рэндж
-function filtrRange (arr, range) {
+  function filtrRange (arr, range) {
     const NewArray = arr.filter((item) => {
       return item.duration < 40
     })

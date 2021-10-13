@@ -22,50 +22,39 @@ import FiltrMovies from '../Movies/FiltrMovies'
 
 
 function App() {
-const [loggedIn, setLoggedIn] = React.useState(false);
-const history = useHistory(); 
-const [currentUser, setCurrentUser] = React.useState({});
-const [email, setEmail] = React.useState('');
-const [name, setName] = React.useState('');
-const { filtrKey, filtrRange } = FiltrMovies()
-//переменная для хранения кликов по кнопке сохранения
-const [isSave, setIsSave] = React.useState(null);
-
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const history = useHistory(); 
+  const [currentUser, setCurrentUser] = React.useState({});
+  const [email, setEmail] = React.useState('');
+  const [name, setName] = React.useState('');
+  const { filtrKey, filtrRange } = FiltrMovies()
 //стейт-переменная для полученных фильмов из внешнего Api и локального хранилища
-const [movies, setMovies] = React.useState([]);
-
+  const [movies, setMovies] = React.useState([]);
 //стейт-переменная для сохраненных фильмов
-const[getMovie, setGetMovie] = React.useState([]);
-
-const [isSacces, setIsSacces] = React.useState(false)
+  const[getMovie, setGetMovie] = React.useState([]);
+  const [isSacces, setIsSacces] = React.useState(false)
   const [succesOk, setSuccesOk] =React.useState(false);
   const location = useLocation();
-const savedMovies = location.pathname ==='/saved-movies';
-const moviesPage = location.pathname ==='/movies';
-const [movieArr, setMovieArr] = React.useState([]);
- const saveLocalData = JSON.parse(localStorage.getItem('newArr'))
-
-
+  const savedMovies = location.pathname ==='/saved-movies';
+  const moviesPage = location.pathname ==='/movies';
+  const [movieArr, setMovieArr] = React.useState([]);
+  const saveLocalData = JSON.parse(localStorage.getItem('newArr'))
 //переменная для получения данных из локального хранилища
-const localData = JSON.parse(localStorage.getItem('newMassiv'))
-
-const [isOpenPreloader, setIsOpenPreloader] = React.useState(false);
-//const [infoError, setInfoError] = React.useState('');
+  const localData = JSON.parse(localStorage.getItem('newMassiv'))
+  const [isOpenPreloader, setIsOpenPreloader] = React.useState(false);
 
 //Получение токена при какждом мониторовании
-React.useEffect(()=>{
-  tokenCheck();
-  
-}, [])
+  React.useEffect(()=>{
+    tokenCheck();
+  }, [])
 
-React.useEffect(()=>{
-  handleGetSaveMovies();
-}, [savedMovies, loggedIn ]);
+  React.useEffect(()=>{
+    handleGetSaveMovies();
+  }, [savedMovies, loggedIn ]);
 
-React.useEffect(()=>{
-  setMovies(localData)
-  
-}, [ moviesPage,loggedIn, setMovies ])
+  React.useEffect(()=>{
+    setMovies(localData) 
+  }, [ moviesPage,loggedIn, setMovies ])
 
 //открытие модального окна с ошибкой
 /*function handleSubmitClick(err) {
@@ -73,11 +62,11 @@ React.useEffect(()=>{
   setSuccesOk(err)
 }*/
 //закрытия сообщения об ошибке
-function closeModalInfo() {
-  setIsSacces(false)
-}
+  function closeModalInfo() {
+    setIsSacces(false) 
+  }
 //Регистрация пользователя
-function onRegister({name,email,password}) {
+  function onRegister({name,email,password}) {
   auth.register(name, email, password)
   .then((res) => {
     if(res){
@@ -90,10 +79,7 @@ function onRegister({name,email,password}) {
     console.log(err)
     
   });
-}
-
-
-
+  }
 
 //Вход в профиль
 function onLogin({email,password}){
