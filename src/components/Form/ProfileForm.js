@@ -33,12 +33,12 @@ function ProfileForm(props) {
       <form className="profile__form" onSubmit={handleSubmit} >
         <fieldset className="profile__form__info">
           <label className="profile__form__label" htmlFor="name">Имя
-            <input disabled={isDisabled} value={name} onChange={handleChangeName} placeholder={props.name} type="text" className="profile__form__item" name="name" id="name" required minLength="2" maxLength="40" />
+            <input autoComplete="off" disabled={isDisabled} value={name} onChange={handleChangeName} placeholder={props.name} type="text" className="profile__form__item" name="name" id="name" required minLength="2" maxLength="40" />
           </label>
           <span className="email-error form__item-error"></span>
 
           <label className="profile__form__label" htmlFor="email">E-mail
-            <input disabled={isDisabled} type="email" value={email} onChange={handleChangeEmail} placeholder={props.email} className={`profile__form__item ${!isDisabled ? ('profile__form__item_active') : ''} `} name="email" id="email" required/>
+            <input autoComplete="off" disabled={isDisabled} type="email" value={email} onChange={handleChangeEmail} placeholder={props.email} className={`profile__form__item ${!isDisabled ? ('profile__form__item_active') : ''} `} name="email" id="email" required/>
           </label>
         </fieldset>
         <div className="profile__form__submit">

@@ -11,6 +11,7 @@ function SavedMovies(props) {
     <main className="content">
      <SearchForm 
       onSearch={props.onSearch}
+      onRange={props.onRange}
        />
       <Preloader 
       isOpen={props.isOpen} />
@@ -20,6 +21,7 @@ function SavedMovies(props) {
         //key прописан временно пока не придут с сервера id
         <MoviesCard 
         movie={movie} 
+        saveMovie={props.saveMovie}
         key={movie._id}
         onMovieDelete={props.onMovieDelete}
         />

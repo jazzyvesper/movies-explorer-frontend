@@ -39,7 +39,7 @@ function Register(props) {
     password={password}
     >
     <label className="input__label" htmlFor="name">Имя</label>
-    <input onChange={handleChangeName} value={name || ''} type="text"className="form__item form__item_type_name" name="name" id="name" required minLength="2" maxLength="40" />
+    <input onChange={handleChangeName} autoComplete="off" value={name || ''} type="text"className="form__item form__item_type_name" name="name" id="name" required minLength="2" maxLength="40" />
     <span className="name-error form__item-error"></span>
     </Form>    
   )

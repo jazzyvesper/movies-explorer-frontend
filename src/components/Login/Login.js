@@ -10,6 +10,7 @@ function Login(props) {
     setEmail(e.target.value);
   }
   
+  console.log(email)
   function handleChangePassword (e) {
     setPassword(e.target.value);
   }

@@ -15,9 +15,10 @@ import ProtectedRoute from '../ProtectedRoute'
 import './App.css';
 import * as auth from '../../utils/Auth.js';
 import api from '../../utils/MainApi';
-import apiFilms from '../../utils/MoviesApi'
-import succesImgErr from '../../images/succesErr.svg';
-import succesImgOk from '../../images/succesOk.svg';
+import apiFilms from '../../utils/MoviesApi';
+import FiltrMovies from '../Movies/FiltrMovies'
+//import succesImgErr from '../../images/succesErr.svg';
+//import succesImgOk from '../../images/succesOk.svg';
 
 
 function App() {
@@ -26,9 +27,9 @@ const history = useHistory();
 const [currentUser, setCurrentUser] = React.useState({});
 const [email, setEmail] = React.useState('');
 const [name, setName] = React.useState('');
-
+const { filtrKey, filtrRange } = FiltrMovies()
 //переменная для хранения кликов по кнопке сохранения
-const [isSave, setIsSave] = React.useState(false);
+const [isSave, setIsSave] = React.useState(null);
 
 //стейт-переменная для полученных фильмов из внешнего Api и локального хранилища
 const [movies, setMovies] = React.useState([]);
@@ -41,6 +42,9 @@ const [isSacces, setIsSacces] = React.useState(false)
   const location = useLocation();
 const savedMovies = location.pathname ==='/saved-movies';
 const moviesPage = location.pathname ==='/movies';
+const [movieArr, setMovieArr] = React.useState([]);
+ const saveLocalData = JSON.parse(localStorage.getItem('newArr'))
+
 
 //переменная для получения данных из локального хранилища
 const localData = JSON.parse(localStorage.getItem('newMassiv'))
@@ -51,6 +55,7 @@ const [isOpenPreloader, setIsOpenPreloader] = React.useState(false);
 //Получение токена при какждом мониторовании
 React.useEffect(()=>{
   tokenCheck();
+  
 }, [])
 
 React.useEffect(()=>{
@@ -59,6 +64,7 @@ React.useEffect(()=>{
 
 React.useEffect(()=>{
   setMovies(localData)
+  
 }, [ moviesPage,loggedIn, setMovies ])
 
 //открытие модального окна с ошибкой
@@ -86,6 +92,9 @@ function onRegister({name,email,password}) {
   });
 }
 
+
+
+
 //Вход в профиль
 function onLogin({email,password}){
   auth.authorize(email, password)
@@ -102,6 +111,7 @@ function onLogin({email,password}){
 function tokenCheck() {
   auth.getContent()
   .then((res) => {
+    console.log('я и тут')
     if(res){
     setCurrentUser(res)
       setName(res.name)
@@ -123,58 +133,78 @@ function onSignOut(){
   .catch(err => console.log(`Не удалось выйти из системы: ${err}`)) 
 }
 
-//Фильтр для Массиваполученных данных
-function newData (arr, keyword) {
-  console.log(keyword)
-  const NewArray = arr.filter((item) => {
-   return item.nameRU.includes(keyword)
-  })
-return NewArray
+//фильтр по чексбоксу в сохраненных фильмач
+function handleChangeRangeMovie(rangeValue) {
+  if (rangeValue===0) {
+    handleGetSaveMovies();
+  } else {
+  handleClickRange(getMovie, rangeValue, setGetMovie)
+  }
+}
+//фильтр по чекбоксу по фильмам
+function handleChangeRange(rangeValue) {
+  if (rangeValue===0) {
+    console.log('click0')
+     setMovies(localData);
+  } else {
+    console.log('click')
+  handleClickRange(movies, rangeValue, setMovies)
+  }
+}
+
+function handleClickRange(arr, rangeValue, setconst) {
+  const newMassiv = filtrRange(arr, rangeValue)
+  setconst(newMassiv)
 }
 
 //временная реализации вывода ошибок
 const message = 'Вы ввели неправильный логин или пароль';
 
 //Запрос всех фильмов со стороннего Api
-function habdlerSearchMoviesServer(keywords) {
+function habdlerSearchMoviesServer(data) {
   setIsOpenPreloader(true)
   apiFilms.getMovies()
   .then((MoviesCardlist) => {
-    const newMassiv = newData(MoviesCardlist,keywords)
+    const newMassiv = filtrKey(MoviesCardlist, data)
     setMovies(newMassiv)
     setIsOpenPreloader(false)
-    console.log(movies)
     localStorage.setItem("newMassiv", JSON.stringify(newMassiv));
-    
    })
    .catch(err => console.log(`Ошибка при поиске карточки: ${err}`))
 }
 
-console.log(movies)
-
 /*function handleError(message) {
   setInfoError(message);
 }*/
+
 //Сохранение фильмов на нашем сервере
 function handleMovieSave(movie) {
-api.savedMovies(movie)
-.then((NewMovie) => {
- 
-  console.log(`Фильм успешно сохранен`)
- })
- .catch(err => console.log(`Ошибка при сохранении карточки: ${err}`))
+  api.savedMovies(movie)
+  .then((newMovie) => {
+    console.log(`Фильм успешно сохранен`)
+    /*setGetMovie((getMovie) => {
+      console.log(getMovie)
+     const userdata = getMovie.some((c) => c.movieId === movie.movieId)
+     console.log(userdata)
+     console.log(getMovie)
+     const newarr = getMovie.push(newMovie)
+     console.log(newarr)
+     return getMovie
+    })
+    console.log(setGetMovie)
+   */
+    api.getMovies()
+    .then(savedMovies => setGetMovie(savedMovies))
+  })
+  .catch(err => console.log(`Ошибка при сохранении карточки: ${err}`))
+  
 }
 
 //Получение сохраненых фильмов с нашего сервера
-function handleGetSaveMovies(keyword) {
+function handleGetSaveMovies() {
   api.getMovies()
   .then((SavedCardlist) => {
-    if(keyword) {
-      const filterMovie = newData(SavedCardlist,keyword)
-      setGetMovie(filterMovie)
-    }else {
-      setGetMovie(SavedCardlist)
-    }
+    setGetMovie(SavedCardlist)
   })
   .catch(err => console.log(`Ошибка при получении фильмов: ${err}`))
 }
@@ -184,12 +214,27 @@ function handleDeleteMovie (movie) {
   api.deleteMovie(movie._id)
   .then((movie) => {
     console.log(`Фильм успешно удален`)
-    setGetMovie((movies)=> movies.filter((c) => c._id !== movie._id))
-     
+    setGetMovie((getMovie)=> getMovie.filter((c) => c.movieId !== movie.movieId
+     ))
   })
    
    .catch(err => console.log(`Ошибка при удалении карточки: ${err}`))
 }
+
+//фильтрация по сабмтиту
+function handleClickFiltrSaveMovie(data) {
+  api.getMovies()
+  .then((SavedCardlist) => {
+    if(data.keyword) {
+      const filterMovie = filtrKey(SavedCardlist,data)
+      setGetMovie(filterMovie)
+    } else {
+      console.log("Поск не может быть пустым")
+    } 
+  })
+  .catch(err => console.log(`Ошибка при получении фильмов: ${err}`))
+}
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
     <div className="page">
@@ -217,10 +262,12 @@ function handleDeleteMovie (movie) {
           component={Movies} 
           loggedIn={loggedIn}
           movies={movies}
+          saveMovie={getMovie}
           onMovieSave={handleMovieSave}
           isOpen={isOpenPreloader}
-          isSave={isSave}
           onSearch={habdlerSearchMoviesServer}
+          onRange={handleChangeRange}
+          
         />
 
         <ProtectedRoute
@@ -228,9 +275,11 @@ function handleDeleteMovie (movie) {
           component={SavedMovies} 
           loggedIn={loggedIn}
           movies={getMovie}
+          saveMovie={getMovie}
           onMovieDelete={handleDeleteMovie}
           isOpen={isOpenPreloader}
-          onSearch={handleGetSaveMovies}
+          onSearch={handleClickFiltrSaveMovie}
+          onRange={handleChangeRangeMovie}
         />
 
         <ProtectedRoute
