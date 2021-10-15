@@ -9,7 +9,7 @@ function Profile(props) {
       name={props.name}
       email={props.email}
       logOut={props.logOut}
-      errorText={props.errorText}
+      onEditProfile={props.onEditProfile}
        />
       
     </section>

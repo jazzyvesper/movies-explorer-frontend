@@ -12,7 +12,7 @@ function SearchForm(props) {
   function handleSubmit(e) {
     e.preventDefault();
     props.onSearch({
-      keyword, 
+      keyword,
       rangeValue
     })
     setKeyword('');
@@ -35,8 +35,9 @@ function SearchForm(props) {
       <form className="search__form" onSubmit={handleSubmit} >
         <fieldset className="search__form_type_films">
           <input className="search__input" value={keyword || ''} onChange={handleChangeName} name="search" placeholder="Фильм" type="search" id="search" />
-          <span className="search-error entrance__item-error"></span>
           <button className="search__button" type="submit" >Найти</button>
+          {props.messageError && <span className="form_search form__item-error">{props.messageError}</span>}
+          
         </fieldset>
         <fieldset className="search__form_type_range">
           <input onClick={handleClick} onChange={handleCheckBox} type="range" min="0" max="1" step="1" value={rangeValue} className="search__content" name="search__content" id="search__content" />

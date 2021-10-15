@@ -11,6 +11,8 @@ function Movies(props) {
       <SearchForm 
       onSearch={props.onSearch}
       onRange={props.onRange}
+      errorSearch={props.errorSearch}
+      messageError={props.messageError}
        />
       <Preloader 
       isOpen={props.isOpen}/>

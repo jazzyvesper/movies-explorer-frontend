@@ -1,30 +1,25 @@
 import React from 'react';
 import './ProfileForm.css'
-import Error from '../Error/Error';
+import {useFormValidation} from '../Validator.js';
+import {pattern} from '../../utils/constants';
+
 
 function ProfileForm(props) {
+
+  const { values, handleChange, errors, isValid } = useFormValidation({
+    email: '', name: '' });
+  const submitDisabled = values.email === '' || values.name === '' || !isValid;
+  
   const [isDisabled, setIsDisabled] = React.useState(true)
-  const [name, setName] = React.useState('');
-  const [email, setEmail ] = React.useState('')
-
-  function handleChangeName(e) {
-    setName(e.target.value);
-  }
-    
-  function handleChangeEmail (e) {
-    setEmail(e.target.value);
-  }
-
   function handleEditProfile() {
     setIsDisabled(false)
   }
 
-  function handleSaveProfile() {
-    setIsDisabled(true)
-  }
 
   function handleSubmit(e) {
     e.preventDefault();
+    setIsDisabled(true)
+    props.onEditProfile(values.email, values.name)
   }
  
   return (
@@ -33,12 +28,38 @@ function ProfileForm(props) {
       <form className="profile__form" onSubmit={handleSubmit} >
         <fieldset className="profile__form__info">
           <label className="profile__form__label" htmlFor="name">Имя
-            <input autoComplete="off" disabled={isDisabled} value={name} onChange={handleChangeName} placeholder={props.name} type="text" className="profile__form__item" name="name" id="name" required minLength="2" maxLength="40" />
+            <input 
+            autoComplete="off" 
+            disabled={isDisabled} 
+            value={values.name || ''} 
+            onChange={handleChange} 
+            placeholder={props.name} 
+            type="text" 
+            className="profile__form__item" 
+            name="name" 
+            id="name" 
+            required 
+            minLength="2" 
+            maxLength="40"
+            pattern={pattern.name}
+             />
           </label>
           <span className="email-error form__item-error"></span>
 
           <label className="profile__form__label" htmlFor="email">E-mail
-            <input autoComplete="off" disabled={isDisabled} type="email" value={email} onChange={handleChangeEmail} placeholder={props.email} className={`profile__form__item ${!isDisabled ? ('profile__form__item_active') : ''} `} name="email" id="email" required/>
+            <input 
+            autoComplete="off" 
+            disabled={isDisabled} 
+            type="email" 
+            value={values.email || ''} 
+            onChange={handleChange} 
+            placeholder={props.email} 
+            className={`profile__form__item ${!isDisabled ? ('profile__form__item_active') : ''} `} 
+            name="email" 
+            id="email" 
+            required
+            pattern={pattern.email}
+            />
           </label>
         </fieldset>
         <div className="profile__form__submit">
@@ -49,10 +70,10 @@ function ProfileForm(props) {
           </>
           : 
           <>
-          <Error 
-          errorText={props.errorText}
-          />
-            <button onClick={handleSaveProfile} className="profile__form__button_type_save section__link" type="submit">Сохранить</button>
+          {errors.email && <span className="password-error form__item-error">{errors.email}</span>}
+          {errors.name && <span className="password-error form__item-error">{errors.name}</span>}
+          
+            <button disabled={submitDisabled ? true : ''}  className={`profile__form__button_type_save ${submitDisabled ? ('form__button_disabled') : 'section__link'}`} type="submit">Сохранить</button>
           </>
           }
         </div>  

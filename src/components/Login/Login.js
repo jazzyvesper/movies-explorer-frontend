@@ -1,25 +1,21 @@
 import React from 'react';
 import Form from '../Form/Form'
 import './Login.css'
+import {useFormValidation} from '../Validator.js';
 
 function Login(props) {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-    
-  function handleChangeEmail(e) {
-    setEmail(e.target.value);
-  }
+
+  const { values, handleChange, errors, isValid } = useFormValidation({
+    email: '', password: '' });
+  const submitDisabled = values.email === '' || values.password === '' || !isValid;
   
-  console.log(email)
-  function handleChangePassword (e) {
-    setPassword(e.target.value);
-  }
+  
   function handleSubmit(e) {
     e.preventDefault();
-    props.onLogin({email, password})
-    setEmail('');
-    setPassword('')
+    props.onLogin(values.email, values.password);
+  
   } 
+
   return (
     <Form 
     title="Рады видеть!" 
@@ -27,13 +23,18 @@ function Login(props) {
     text="Ещё не зарегистрированы?"
     sign="Регистрация"
     rout="/signup"
+    onLogin={props.onLogin}
+    email={values.email}
+    password={values.password}
     onSubmit={handleSubmit}
-    onChangeEmail={handleChangeEmail} 
-    onChangePassword={handleChangePassword}
-    email={email}
-    password={password}>
+    onChange={handleChange}
+    errorsEmail={errors.email}
+    errorsPassword={errors.password}
+    submitDisabled={submitDisabled}
+    serverError={props.serverError}
+    >
     </Form>   
   )
 }
-  
+
 export default Login;

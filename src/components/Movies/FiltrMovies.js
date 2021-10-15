@@ -1,15 +1,13 @@
-function FiltrMovies() {
-
-//1. фильтр по поисковому слову
-  function filtrKey (arr, data) {
+export function filtrKey (arr, data) {
+    const keywordSearch = data.keyword.toLowerCase();
     const NewArray = arr.filter((item) => {
-     return item.nameRU.includes(data.keyword)
+      return item.nameRU.toLowerCase().includes(keywordSearch)
     })
   return NewArray
-  }
+}
 
 //2. фильтр слово + range
-  function filtrKeyAndRange (arr, data) {
+  export function filtrKeyAndRange (arr, data) {
     console.log(data)
     const NewArray = arr.filter((item) => {
       return item.nameRU.includes(data.keyword) && item.duration < 40
@@ -17,15 +15,9 @@ function FiltrMovies() {
   return NewArray
   }
 //3. фильтр при клике по рэндж
-  function filtrRange (arr, range) {
+export function filtrRange (arr, range) {
     const NewArray = arr.filter((item) => {
       return item.duration < 40
     })
   return NewArray
   }
-
-  return { filtrKey, filtrKeyAndRange, filtrRange } 
-}
-
-
-export default FiltrMovies

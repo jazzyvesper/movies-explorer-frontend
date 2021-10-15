@@ -1,29 +1,19 @@
 import React from 'react';
-
 import Form from '../Form/Form'
 import './Register.css'
+import {useFormValidation} from '../Validator.js';
+import {pattern} from '../../utils/constants';
 
 function Register(props) {
-  const [name, setName] = React.useState(' ');
-  const [email, setEmail] = React.useState(' ');
-  const [password, setPassword] = React.useState('');
-
-  function handleChangeName (e) {
-    setName(e.target.value);
-  }
-
-  function handleChangeEmail(e) {
-    setEmail(e.target.value);
-  }
-
-  function handleChangePassword (e) {
-    setPassword(e.target.value);
-  }
-
+  const { values, handleChange, errors, isValid } = useFormValidation({
+    email: '', password: '' });
+  const submitDisabled = values.email === '' || values.password === '' || !isValid;
+  
+  
   function handleSubmit(e) {
     e.preventDefault();
-    props.onRegister({name, email, password})
-    }
+    props.onRegister(values.email, values.password, values.name) 
+  } 
 
   return (
     <Form 
@@ -32,15 +22,31 @@ function Register(props) {
     text="Уже зарегистрированы?"
     sign="Войти"
     rout="/signin"
-    onSubmit={handleSubmit} 
-    onChangeEmail={handleChangeEmail} 
-    onChangePassword={handleChangePassword}
-    email={email}
-    password={password}
+    onRegister={props.onRegister}
+    email={values.email}
+    password={values.password}
+    onSubmit={handleSubmit}
+    onChange={handleChange}
+    errorsEmail={errors.email}
+    errorsPassword={errors.password}
+    submitDisabled={submitDisabled}
+    serverError={props.serverError}
     >
     <label className="input__label" htmlFor="name">Имя</label>
-    <input onChange={handleChangeName} autoComplete="off" value={name || ''} type="text"className="form__item form__item_type_name" name="name" id="name" required minLength="2" maxLength="40" />
-    <span className="name-error form__item-error"></span>
+    <input 
+    onChange={handleChange} 
+    autoComplete="off" 
+    value={values.name} 
+    type="text"className="form__item form__item_type_name" 
+    name="name" 
+    id="name" 
+    required 
+    minLength="2" 
+    maxLength="40"
+    pattern={pattern.name}
+    />
+    {errors.name && <span className="email-error form__item-error">{errors.name}</span>}
+          
     </Form>    
   )
 }

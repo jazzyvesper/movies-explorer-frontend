@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch,useHistory, useLocation } from 'react-router-dom';
+import { Route, Switch,useHistory,useLocation } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer'
 import Main from '../Main/Main';
@@ -8,40 +8,44 @@ import SavedMovies from '../SavedMovies/SavedMovies';
 import Profile from '../Profile/Profile.js';
 import Register from '../Register/Register.js';
 import Login from '../Login/Login.js';
-import ModalInfo from '../ModalInfo/ModalInfo.js';
-//import NotFound from '../NotFound/NotFound';
+import NotFound from '../NotFound/NotFound';
 import { CurrentUserContext } from '../../context/CurrentUserContext';
 import ProtectedRoute from '../ProtectedRoute'
 import './App.css';
 import * as auth from '../../utils/Auth.js';
 import api from '../../utils/MainApi';
 import apiFilms from '../../utils/MoviesApi';
-import FiltrMovies from '../Movies/FiltrMovies'
-//import succesImgErr from '../../images/succesErr.svg';
-//import succesImgOk from '../../images/succesOk.svg';
-
+import {filtrKey, filtrRange} from '../Movies/FiltrMovies'
+import {infoMessage, errorMessage, authErrors} from '../../utils/constants'
 
 function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const history = useHistory(); 
+  const location = useLocation();
   const [currentUser, setCurrentUser] = React.useState({});
   const [email, setEmail] = React.useState('');
   const [name, setName] = React.useState('');
-  const { filtrKey, filtrRange } = FiltrMovies()
-//стейт-переменная для полученных фильмов из внешнего Api и локального хранилища
   const [movies, setMovies] = React.useState([]);
-//стейт-переменная для сохраненных фильмов
-  const[getMovie, setGetMovie] = React.useState([]);
-  const [isSacces, setIsSacces] = React.useState(false)
-  const [succesOk, setSuccesOk] =React.useState(false);
-  const location = useLocation();
-  const savedMovies = location.pathname ==='/saved-movies';
-  const moviesPage = location.pathname ==='/movies';
-  const [movieArr, setMovieArr] = React.useState([]);
-  const saveLocalData = JSON.parse(localStorage.getItem('newArr'))
-//переменная для получения данных из локального хранилища
+  const [getMovie, setGetMovie] = React.useState([]);
   const localData = JSON.parse(localStorage.getItem('newMassiv'))
   const [isOpenPreloader, setIsOpenPreloader] = React.useState(false);
+  const [messageError, setMessageError] = React.useState('');
+  const [serverError, setServerError] = React.useState('');
+  const [moviesData, setMoviesData] = React.useState([]);
+
+  //Получение данных с сервера
+  React.useEffect(() => {
+    if(loggedIn) {
+    Promise.all([auth.getContent(), apiFilms.getMovies(), api.getMovies()])
+    .then(([userData, moviesData, SavedCardlist]) => {
+      setCurrentUser(userData);
+      setMoviesData(moviesData)
+      setGetMovie(SavedCardlist)
+    })
+    .catch(err => console.log(`Ошибка при загрузке профиля: ${err}`))
+    }else {
+    }
+  }, [loggedIn])
 
 //Получение токена при какждом мониторовании
   React.useEffect(()=>{
@@ -49,47 +53,63 @@ function App() {
   }, [])
 
   React.useEffect(()=>{
-    handleGetSaveMovies();
-  }, [savedMovies, loggedIn ]);
-
-  React.useEffect(()=>{
-    setMovies(localData) 
-  }, [ moviesPage,loggedIn, setMovies ])
-
-//открытие модального окна с ошибкой
-/*function handleSubmitClick(err) {
-  setIsSacces(true)
-  setSuccesOk(err)
-}*/
-//закрытия сообщения об ошибке
-  function closeModalInfo() {
-    setIsSacces(false) 
-  }
-//Регистрация пользователя
-  function onRegister({name,email,password}) {
-  auth.register(name, email, password)
-  .then((res) => {
-    if(res){
-     
-    //текст об успешной регистрации
-      history.push('/signin') 
+    if(localData) {
+      setMovies(localData) 
+    } else {
+      setMovies(moviesData)
     }
-  })
-  .catch(err => {
-    console.log(err)
-    
-  });
+  }, [ loggedIn, setMovies, moviesData ])
+
+//Регистрация пользователя
+  function onRegister( email,password, name ) {
+    auth.register(name, email, password)
+    .then((res) => {
+      if(res){
+        onLogin(email,password)
+        history.push('/') 
+      }
+    })
+    .catch(err => {
+      if(err = authErrors.conflictErr) { 
+        setServerError('Пользователь с таким email уже существует')
+      } else {
+        setServerError('При регистрации пользователя произошла ошибка.')
+      }
+    });
   }
 
 //Вход в профиль
-function onLogin({email,password}){
+function onLogin(email,password){
   auth.authorize(email, password)
   .then(() => {
-      tokenCheck();
+    tokenCheck();
+  })
+  .catch(err => { 
+    if(err = authErrors.unauthorizedErr) { 
+      setServerError('Ошибка авторизации. Неверный email или пароль')
+    } else {
+      setServerError('При авторизации произошла ошибка. Токен не передан или передан не в том формате.')
+    } 
+  });
+}
+
+//Изменение данных пользователя
+function handleEditProfile(email, name) {
+  setIsOpenPreloader(true)
+  auth.editContent(email, name)
+  .then((res) => {
+    setName(res.name)
+    setEmail(res.email)
+    setIsOpenPreloader(false)
   })
   .catch(err => {
-    console.log(err)
-    
+    setIsOpenPreloader(false)
+    if(err = authErrors.badRequestErr) { 
+      setServerError('При обновлении профиля произошла ошибка.')
+    } else {
+      setServerError('На сервере произошла ошибка.')
+      console.log(`При обновлении профиля произошла ошибка: ${err}`)
+    } 
   });
 }
 
@@ -97,16 +117,18 @@ function onLogin({email,password}){
 function tokenCheck() {
   auth.getContent()
   .then((res) => {
-    console.log('я и тут')
     if(res){
-    setCurrentUser(res)
       setName(res.name)
       setEmail(res.email)
       setLoggedIn(true)
-      history.push('/movies')
+      if (location.pathname === '/signin' || location.pathname === '/signup') {
+        history.push('/movies');
+      } else {
+        history.push(location.pathname);
+      }
     }
   })
-    .catch(err => console.log(`Зарегистрируйтесь или войдите в систему: ${err}`))  
+  .catch(err => console.log(`Зарегистрируйтесь или войдите в систему: ${err}`))  
 }
 
 //Выход из системы
@@ -119,7 +141,7 @@ function onSignOut(){
   .catch(err => console.log(`Не удалось выйти из системы: ${err}`)) 
 }
 
-//фильтр по чексбоксу в сохраненных фильмач
+//фильтр по чексбоксу в сохраненных фильмаx
 function handleChangeRangeMovie(rangeValue) {
   if (rangeValue===0) {
     handleGetSaveMovies();
@@ -127,58 +149,72 @@ function handleChangeRangeMovie(rangeValue) {
   handleClickRange(getMovie, rangeValue, setGetMovie)
   }
 }
+
 //фильтр по чекбоксу по фильмам
 function handleChangeRange(rangeValue) {
   if (rangeValue===0) {
-    console.log('click0')
      setMovies(localData);
   } else {
-    console.log('click')
-  handleClickRange(movies, rangeValue, setMovies)
+  handleClickRange(localData, rangeValue, setMovies)
   }
 }
 
+//фильтрация по сабмтиту
+function handleClickFiltrSaveMovie(data) {
+  if(data.keyword) {
+    setMessageError('')
+    setIsOpenPreloader(true)
+  api.getMovies()
+  .then((SavedCardlist) => {
+      const filterMovie = filtrKey(SavedCardlist,data)
+      if(filterMovie.length !== 0) {
+        setGetMovie(filterMovie)
+        setIsOpenPreloader(false)
+      } else {
+        setIsOpenPreloader(false)
+        setMessageError(infoMessage.dontFindMovie)
+      }
+  })
+  .catch(err => { 
+    setIsOpenPreloader(false)
+    setMessageError(errorMessage.searchError)
+    console.log(`Ошибка при поиске карточки: ${err}`)
+  })
+} else {
+  setMessageError(errorMessage.keywordNull)
+  }
+}
+
+//фильтрация по клику на ползунок
 function handleClickRange(arr, rangeValue, setconst) {
   const newMassiv = filtrRange(arr, rangeValue)
   setconst(newMassiv)
 }
 
-//временная реализации вывода ошибок
-const message = 'Вы ввели неправильный логин или пароль';
-
 //Запрос всех фильмов со стороннего Api
 function habdlerSearchMoviesServer(data) {
-  setIsOpenPreloader(true)
-  apiFilms.getMovies()
-  .then((MoviesCardlist) => {
-    const newMassiv = filtrKey(MoviesCardlist, data)
-    setMovies(newMassiv)
-    setIsOpenPreloader(false)
-    localStorage.setItem("newMassiv", JSON.stringify(newMassiv));
-   })
-   .catch(err => console.log(`Ошибка при поиске карточки: ${err}`))
+  if (data.keyword) {
+    setMessageError('')
+    setIsOpenPreloader(true)
+    const newMassiv = filtrKey(moviesData, data)
+    if(newMassiv.length !== 0) {
+      setMovies(newMassiv)
+      setIsOpenPreloader(false)
+      localStorage.setItem("newMassiv", JSON.stringify(newMassiv));
+    } else {
+      setIsOpenPreloader(false)
+      setMessageError(infoMessage.dontFindMovie)
+    }
+  } else {
+    setMessageError(errorMessage.keywordNull)
+  }
 }
-
-/*function handleError(message) {
-  setInfoError(message);
-}*/
 
 //Сохранение фильмов на нашем сервере
 function handleMovieSave(movie) {
   api.savedMovies(movie)
   .then((newMovie) => {
     console.log(`Фильм успешно сохранен`)
-    /*setGetMovie((getMovie) => {
-      console.log(getMovie)
-     const userdata = getMovie.some((c) => c.movieId === movie.movieId)
-     console.log(userdata)
-     console.log(getMovie)
-     const newarr = getMovie.push(newMovie)
-     console.log(newarr)
-     return getMovie
-    })
-    console.log(setGetMovie)
-   */
     api.getMovies()
     .then(savedMovies => setGetMovie(savedMovies))
   })
@@ -204,21 +240,7 @@ function handleDeleteMovie (movie) {
      ))
   })
    
-   .catch(err => console.log(`Ошибка при удалении карточки: ${err}`))
-}
-
-//фильтрация по сабмтиту
-function handleClickFiltrSaveMovie(data) {
-  api.getMovies()
-  .then((SavedCardlist) => {
-    if(data.keyword) {
-      const filterMovie = filtrKey(SavedCardlist,data)
-      setGetMovie(filterMovie)
-    } else {
-      console.log("Поск не может быть пустым")
-    } 
-  })
-  .catch(err => console.log(`Ошибка при получении фильмов: ${err}`))
+  .catch(err => console.log(`Ошибка при удалении карточки: ${err}`))
 }
 
   return (
@@ -233,16 +255,16 @@ function handleClickFiltrSaveMovie(data) {
         <Route path="/signup"> 
           <Register
           onRegister={onRegister}
-          errorText={message} />
+          serverError={serverError}
+        />
         </Route>
         <Route path="/signin"> 
           <Login 
-           onLogin={onLogin}
+          onLogin={onLogin}
           loggedIn={loggedIn}
-          errorText={message}
+          serverError={serverError}
           />
         </Route>
-
         <ProtectedRoute
           path="/movies"
           component={Movies} 
@@ -253,7 +275,7 @@ function handleClickFiltrSaveMovie(data) {
           isOpen={isOpenPreloader}
           onSearch={habdlerSearchMoviesServer}
           onRange={handleChangeRange}
-          
+          messageError={messageError}
         />
 
         <ProtectedRoute
@@ -266,6 +288,7 @@ function handleClickFiltrSaveMovie(data) {
           isOpen={isOpenPreloader}
           onSearch={handleClickFiltrSaveMovie}
           onRange={handleChangeRangeMovie}
+          messageError={messageError}
         />
 
         <ProtectedRoute
@@ -273,22 +296,19 @@ function handleClickFiltrSaveMovie(data) {
           component={Profile} 
           title="Привет, Виталий!"
           logOut={onSignOut}
-          errorText={message} 
           loggedIn={loggedIn}
           email={email}
           name={name}
+          onEditProfile={handleEditProfile}
         />
-        
+        <Route path='*'>
+          <NotFound />
+        </Route>
       </Switch>
       <Footer loggedIn={loggedIn}/>
-      <ModalInfo 
-        isOpen={isSacces}
-        onClose={closeModalInfo}
-        textError={succesOk}
-      />
     </div>
-
-   </CurrentUserContext.Provider>
+    
+  </CurrentUserContext.Provider>
   );
 }
 

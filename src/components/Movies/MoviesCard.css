@@ -11,6 +11,7 @@
   border-radius: 6px;
   width: 100%;
   object-fit: cover;
+  height: 190px;;
 }
 
 .card__button {
@@ -99,5 +100,9 @@
   .card__title {
     font-size: 12px;
     line-height: 15px;
+  }
+
+  .card__image {
+    height: 203px;;
   }
 }

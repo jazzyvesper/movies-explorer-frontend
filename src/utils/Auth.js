@@ -5,7 +5,6 @@ const getResponsData = (res)=> {
       return res.json()
     
      }else {
-       console.log('ошибка')
        return Promise.reject(res.status)
      } 
   }
@@ -44,6 +43,18 @@ const getResponsData = (res)=> {
     })
     .then(getResponsData);
   } 
+
+  export const editContent = (email, name) => {
+    return fetch(`${BASE_URL}/users/me`, {
+      method: 'PATCH',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({email, name})
+    })
+    .then(getResponsData);
+  }
 
   export const signOut = () => {
     return fetch(`${BASE_URL}/signout`, {

@@ -20,6 +20,11 @@
   border: 0;
   padding: 0;
   margin: 0;
+  flex-direction: column;
+}
+
+.form_search {
+  padding-left: 10px;
 }
 
 .search__input {
@@ -28,7 +33,8 @@
   margin: auto;
   background: #F9F9F9;
   border-radius: 40px;
-  border: 0;  
+  border: 0;
+  padding-left: 10px;
 }
 
 .search__input::placeholder {
@@ -49,9 +55,8 @@
   width: 70px;
   height: 34px;
   right: 6px;
-  top: 0;
+  top: 5px;
   bottom: 0;
-  margin: auto 0;
   font-weight: 500;
   font-size: 11px;
   line-height: 18px;

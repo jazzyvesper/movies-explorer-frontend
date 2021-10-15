@@ -14,15 +14,13 @@ class MoviesApi {
   }
 
   getMovies () {
+    console.log('click')
     return fetch(`${this._address}/beatfilm-movies`, {
       method: 'GET',
       headers: this._headers,
     })
     .then(this._getResponseData)
   }
-
-
-
 }
 
   const apiFilms = new MoviesApi({
