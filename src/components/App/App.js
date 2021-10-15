@@ -50,6 +50,7 @@ function App() {
 //Получение токена при какждом мониторовании
   React.useEffect(()=>{
     tokenCheck();
+    setServerError('')
   }, [])
 
   React.useEffect(()=>{
@@ -89,6 +90,7 @@ function onLogin(email,password){
       setServerError('Ошибка авторизации. Неверный email или пароль')
     } else {
       setServerError('При авторизации произошла ошибка. Токен не передан или передан не в том формате.')
+      
     } 
   });
 }
