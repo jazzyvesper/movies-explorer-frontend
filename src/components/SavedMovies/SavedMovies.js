@@ -14,6 +14,7 @@ function SavedMovies(props) {
       onRange={props.onRange}
       errorSearch={props.errorSearch}
       messageError={props.messageError}
+      onChange={props.onChange}
        />
       <Preloader 
       isOpen={props.isOpen} />

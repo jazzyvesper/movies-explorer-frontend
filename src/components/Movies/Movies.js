@@ -21,7 +21,7 @@ function Movies(props) {
        onMovieSave={props.onMovieSave}
        isSave={props.isSave}
        saveMovie={props.saveMovie}
-       onMovieDelete={props.onMovieDelete}
+
         />
     </main>
   ) 

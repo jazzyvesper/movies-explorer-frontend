@@ -35,8 +35,13 @@ function App() {
   const [showModal, setShowModal] = React.useState(false);
   const [textsucces, setTextsucces] = React.useState('');
   const [iconVisual,setIconVisual] = React.useState(false);
-  const [localData, setLocalData] = React.useState(JSON.parse(localStorage.getItem('newMassiv')) || []);
+  let getLocaldata = JSON.parse(localStorage.getItem('newMassiv'));
   
+  
+  console.log('getLocaldata')
+  console.log(getLocaldata)
+  console.log('movies')
+  console.log(movies)
   //Получение данных с сервера
   React.useEffect(() => {
     if(loggedIn) {
@@ -55,10 +60,12 @@ function App() {
     tokenCheck();
   }, [])
 
+  React.useEffect(()=> {
+    setMessageError('')
+    
+  },[location.pathname, setMessageError])
 
-  React.useEffect(()=>{
-      setMovies(localData) 
-  }, [ setMovies, moviesData, localData ])
+ 
 
 //Регистрация пользователя
   function onRegister( email,password, name ) {
@@ -184,9 +191,18 @@ function handleChangeRangeMovie(rangeValue) {
 //фильтр по чекбоксу по фильмам
 function handleChangeRange(rangeValue) {
   if (rangeValue===0) {
-     setMovies(localData);
+    setMovies(getLocaldata);
   } else {
-  handleClickRange(localData, rangeValue, setMovies)
+  handleClickRange(getLocaldata, rangeValue, setMovies)
+  }
+}
+
+//фильтрация по клику на ползунок
+function handleClickRange(arr, rangeValue, setconst) {
+  const newMassiv = filtrRange(arr, rangeValue)
+  if(newMassiv) {
+    setconst(newMassiv)
+  } else {
   }
 }
 
@@ -216,28 +232,24 @@ function handleClickFiltrSaveMovie(data) {
   }
 }
 
-//фильтрация по клику на ползунок
-function handleClickRange(arr, rangeValue, setconst) {
-  const newMassiv = filtrRange(arr, rangeValue)
-  setconst(newMassiv)
-}
-
-
-//Запрос всех фильмов со стороннего Api
+//фильтрация всех фильмов со стороннего Api
 function habdlerSearchMoviesServer(data) {
   if (data.keyword) {
+    console.log('тут')
     setMessageError('')
     setIsOpenPreloader(true)
     const newMassiv = filtrKey(moviesData, data)
     if(newMassiv.length !== 0) {
-      setMovies(newMassiv)
       setIsOpenPreloader(false)
       localStorage.setItem("newMassiv", JSON.stringify(newMassiv));
+      setMovies(newMassiv)
     } else {
+      console.log('z pltcm')
+      setMovies([])
       setIsOpenPreloader(false)
       setMessageError(infoMessage.dontFindMovie)
       //удалить массив из локалки
-      setLocalData([])
+      
     }
   } else {
     setMessageError(errorMessage.keywordNull)
@@ -268,18 +280,14 @@ function handleGetSaveMovies() {
 //Удаление карточек из сохраненныx
 function handleDeleteMovie (movie) {
   const usersaved = getMovie.find(i => i.movieId === movie.id);
-  
-  if(usersaved) {
-  api.deleteMovie(usersaved._id)
+  const mov = usersaved ? usersaved : movie
+  api.deleteMovie(mov._id)
   .then((movie) => {
     console.log(`Фильм успешно удален`)
     setGetMovie((getMovie)=> getMovie.filter((c) => c.movieId !== movie.movieId
      ))
   })
   .catch(err => console.log(`Ошибка при удалении карточки: ${err}`))
-}else {
-  console.log('fjdk')
-}
 }
 
   return (

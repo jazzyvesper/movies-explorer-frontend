@@ -4,8 +4,7 @@ import './SearchForm.css';
 function SearchForm(props) {
   const [keyword, setKeyword] = React.useState('')
   const [rangeValue, setRangeValue] = React.useState(0);
-
-   function handleChangeName(e) {
+  function handleChangeName(e) {
     setKeyword(e.target.value);
   }
 
@@ -18,14 +17,11 @@ function SearchForm(props) {
     setKeyword('');
   } 
 
-  function handleCheckBox() {
-    if(rangeValue===0) {
-      setRangeValue(1)
-    } else {
-      setRangeValue(0)
-    }
+  function handleCheckBox(e) {
+    setRangeValue(e.target.value)
   }
-  
+  console.log(rangeValue)
+
   function handleClick() {
     props.onRange(rangeValue)
   }

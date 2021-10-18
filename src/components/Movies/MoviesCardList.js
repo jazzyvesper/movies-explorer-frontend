@@ -16,10 +16,9 @@ function MoviesCardList(props) {
 
 React.useEffect(()=> {
   quantityMovies(0, cardsPage)
-},[ cardsPage, props.movies ])
+},[ cardsPage, props.movies])
 
 React.useEffect(()=> {
-
   window.addEventListener('resize', checkWindowWidth);
 
   if(window.innerWidth > 850) {
@@ -45,7 +44,7 @@ function handleNextClick() {
 function quantityMovies(start, finish) {
   setMovieShow(props.movies.slice(start,finish))
 }
-console.log()
+console.log(props.movies)
   return (
     <section className="cards"> 
     {props.movies.length

@@ -24,6 +24,7 @@ const timeformat = convertTime(props.movie.duration);
   
   function handleDeleteClick() {
     props.onMovieDelete(props.movie);
+    setIsDisabled(false)
   }
  
   return (
