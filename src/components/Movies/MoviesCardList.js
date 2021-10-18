@@ -44,7 +44,6 @@ function handleNextClick() {
 function quantityMovies(start, finish) {
   setMovieShow(props.movies.slice(start,finish))
 }
-console.log(props.movies)
   return (
     <section className="cards"> 
     {props.movies.length

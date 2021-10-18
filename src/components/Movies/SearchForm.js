@@ -3,7 +3,8 @@ import './SearchForm.css';
 
 function SearchForm(props) {
   const [keyword, setKeyword] = React.useState('')
-  const [rangeValue, setRangeValue] = React.useState(0);
+  const [isShortMovie, setIsShortMovie] = React.useState(false);
+
   function handleChangeName(e) {
     setKeyword(e.target.value);
   }
@@ -11,20 +12,18 @@ function SearchForm(props) {
   function handleSubmit(e) {
     e.preventDefault();
     props.onSearch({
-      keyword,
-      rangeValue
+      keyword
     })
     setKeyword('');
   } 
 
-  function handleCheckBox(e) {
-    setRangeValue(e.target.value)
+  function handleCheckBox() {
+    setIsShortMovie(!isShortMovie)
+    props.onChange(!isShortMovie)
+    
+    console.log('click')
   }
-  console.log(rangeValue)
-
-  function handleClick() {
-    props.onRange(rangeValue)
-  }
+ 
   
   return (
     <section className="form__conteiner">
@@ -36,7 +35,7 @@ function SearchForm(props) {
           
         </fieldset>
         <fieldset className="search__form_type_range">
-          <input onClick={handleClick} onChange={handleCheckBox} type="range" min="0" max="1" step="1" value={rangeValue} className="search__content" name="search__content" id="search__content" />
+          <input onChange={handleCheckBox} type="range" min="0" max="1" step="1" value={isShortMovie ? 1 : 0 } className="search__content" name="search__content" id="search__content" />
           <p className="search__text">Короткометражки</p>
         </fieldset>
       </form>

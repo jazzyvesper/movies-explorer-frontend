@@ -3,10 +3,21 @@ import './SavedMovies.css';
 import MoviesCard from '../Movies/MoviesCard'
 import Preloader from '../Movies/Preloader';
 import SearchForm from '../Movies/SearchForm';
+import { filtrRange } from '../Movies/FiltrMovies'
+
 
 function SavedMovies(props) {
+  const [shortMovie, setShortMovie] = React.useState([])
+  const [range, setRange] = React.useState(0);
+  const newMovie = range ? shortMovie : props.movies
 
-
+ React.useEffect(()=> {
+ if(range) {
+   setShortMovie(filtrRange(props.movies))
+ }
+ }, [range, props])
+ 
+ 
   return (
     <main className="content">
      <SearchForm 
@@ -14,13 +25,13 @@ function SavedMovies(props) {
       onRange={props.onRange}
       errorSearch={props.errorSearch}
       messageError={props.messageError}
-      onChange={props.onChange}
+      onChange={setRange}
        />
       <Preloader 
       isOpen={props.isOpen} />
       <section className="cards"> 
         <div className="cards__conteiner">
-          {props.movies.map((movie) => (
+          {newMovie.map((movie) => (
         //key прописан временно пока не придут с сервера id
         <MoviesCard 
         movie={movie} 

@@ -15,7 +15,7 @@ import './App.css';
 import * as auth from '../../utils/Auth.js';
 import api from '../../utils/MainApi';
 import apiFilms from '../../utils/MoviesApi';
-import {filtrKey, filtrRange} from '../Movies/FiltrMovies'
+import {filtrKey} from '../Movies/FiltrMovies'
 import {infoMessage, errorMessage, authErrors, succesOk} from '../../utils/constants';
 import ModalInfo from '../ModalInfo/ModalInfo';
 
@@ -24,8 +24,6 @@ function App() {
   const history = useHistory(); 
   const location = useLocation();
   const [currentUser, setCurrentUser] = React.useState({});
-  //const [email, setEmail] = React.useState('');
-  //const [name, setName] = React.useState('');
   const [movies, setMovies] = React.useState([]); //масси впосле филтрации
   const [getMovie, setGetMovie] = React.useState([]);//массив сохраненных фильмов
   const [isOpenPreloader, setIsOpenPreloader] = React.useState(false);
@@ -42,6 +40,7 @@ function App() {
   console.log(getLocaldata)
   console.log('movies')
   console.log(movies)
+
   //Получение данных с сервера
   React.useEffect(() => {
     if(loggedIn) {
@@ -58,11 +57,14 @@ function App() {
 //Получение токена при какждом мониторовании
   React.useEffect(()=>{
     tokenCheck();
+    if(getLocaldata) {
+      setMovies(getLocaldata)
+    }
+    
   }, [])
 
   React.useEffect(()=> {
     setMessageError('')
-    
   },[location.pathname, setMessageError])
 
  
@@ -179,33 +181,6 @@ function handlerClose() {
   setShowModal(false)
 }
 
-//фильтр по чексбоксу в сохраненных фильмаx
-function handleChangeRangeMovie(rangeValue) {
-  if (rangeValue===0) {
-    handleGetSaveMovies();
-  } else {
-  handleClickRange(getMovie, rangeValue, setGetMovie)
-  }
-}
-
-//фильтр по чекбоксу по фильмам
-function handleChangeRange(rangeValue) {
-  if (rangeValue===0) {
-    setMovies(getLocaldata);
-  } else {
-  handleClickRange(getLocaldata, rangeValue, setMovies)
-  }
-}
-
-//фильтрация по клику на ползунок
-function handleClickRange(arr, rangeValue, setconst) {
-  const newMassiv = filtrRange(arr, rangeValue)
-  if(newMassiv) {
-    setconst(newMassiv)
-  } else {
-  }
-}
-
 //фильтрация по сабмтиту сохраненных фильмов
 function handleClickFiltrSaveMovie(data) {
   if(data.keyword) {
@@ -264,17 +239,7 @@ function handleMovieSave(movie) {
     api.getMovies()
     .then(savedMovies => setGetMovie(savedMovies))
   })
-  .catch(err => console.log(`Ошибка при сохранении карточки: ${err}`))
-  
-}
-
-//Получение сохраненых фильмов с нашего сервера
-function handleGetSaveMovies() {
-  api.getMovies()
-  .then((SavedCardlist) => {
-    setGetMovie(SavedCardlist)
-  })
-  .catch(err => console.log(`Ошибка при получении фильмов: ${err}`))
+  .catch(err => console.log(`Ошибка при сохранении карточки: ${err}`)) 
 }
 
 //Удаление карточек из сохраненныx
@@ -321,9 +286,9 @@ function handleDeleteMovie (movie) {
           onMovieSave={handleMovieSave}
           isOpen={isOpenPreloader}
           onSearch={habdlerSearchMoviesServer}
-          onRange={handleChangeRange}
           messageError={messageError}
           onMovieDelete={handleDeleteMovie}
+
         />
 
         <ProtectedRoute
@@ -335,7 +300,6 @@ function handleDeleteMovie (movie) {
           onMovieDelete={handleDeleteMovie}
           isOpen={isOpenPreloader}
           onSearch={handleClickFiltrSaveMovie}
-          onRange={handleChangeRangeMovie}
           messageError={messageError}
         />
 

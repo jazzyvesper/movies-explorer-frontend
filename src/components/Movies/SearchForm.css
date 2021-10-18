@@ -82,6 +82,7 @@
   width: 36px;
   background: #2BE080;
   border-radius: 20px;
+  cursor: pointer;
 }
 
 .search__text {
