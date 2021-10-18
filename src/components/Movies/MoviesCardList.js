@@ -16,7 +16,7 @@ function MoviesCardList(props) {
 
 React.useEffect(()=> {
   quantityMovies(0, cardsPage)
-},[cardsPage, props.movies])
+},[ cardsPage, props.movies ])
 
 React.useEffect(()=> {
 
@@ -42,27 +42,31 @@ function handleNextClick() {
   quantityMovies(0, movieShow.length + nextCards)
 }
 
-
 function quantityMovies(start, finish) {
   setMovieShow(props.movies.slice(start,finish))
 }
-
+console.log()
   return (
     <section className="cards"> 
-    <div className="cards__conteiner">
-      {props.movies ?
-      movieShow.map((movie, i) => (
+    {props.movies.length
+    ?
+     <div className="cards__conteiner">
+        {props.movies.length ?
+        movieShow.map((movie) => (
         <MoviesCard 
         movie={movie} 
         key={movie.id}
         onMovieSave={props.onMovieSave}
         isSave={props.isSave}
         saveMovie={props.saveMovie}
+        onMovieDelete={props.onMovieDelete}
         />
       ))
-      : <p>Ничего нет </p>
-      }
+      : ''}
     </div>
+    : <p className="cards_not-found">Ничего не найдено</p>
+    }
+    
     {props.movies.length >2 && movieShow.length < props.movies.length
     ? 
     <div className="cards__next">

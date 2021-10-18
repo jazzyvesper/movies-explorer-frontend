@@ -1,5 +1,7 @@
 export const BASE_URL = 'https://api.jazzyvesper.diplom.nomoredomains.club';
 
+
+
 const getResponsData = (res)=> {
     if(res.ok) {
       return res.json()

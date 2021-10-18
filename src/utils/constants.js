@@ -6,12 +6,18 @@ export const pattern = {
 
 export const errorMessage = {
   emailandPasswordError: 'Ошибка авторизации. Неверный email или пароль.',
+  tokenError: 'При авторизации произошла ошибка. Токен не передан или передан не в том формате.',
   registrationError: 'Пользователь с таким email уже существует.',
   searchError: 'Во время запроса произошла ошибка. Подождите немного и попробуйте ещё раз».',
-  keywordNull: "Нужно ввести ключевое слово"
+  keywordNull: "Нужно ввести ключевое слово",
+  badRequestErr: 'При обновлении профиля произошла ошибка.',
+  internalServerErr: 'На сервере произошла ошибка.'
 }
 
-
+export const succesOk = {
+  changeInfoUser: 'Данные успешно обновлены!',
+  signinOk: 'Вы успешно зарегистрированы',
+}
 
 export const infoMessage = {
   dontFindMovie: 'Ничего не найдено'

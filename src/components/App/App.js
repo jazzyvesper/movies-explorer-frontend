@@ -16,29 +16,32 @@ import * as auth from '../../utils/Auth.js';
 import api from '../../utils/MainApi';
 import apiFilms from '../../utils/MoviesApi';
 import {filtrKey, filtrRange} from '../Movies/FiltrMovies'
-import {infoMessage, errorMessage, authErrors} from '../../utils/constants'
+import {infoMessage, errorMessage, authErrors, succesOk} from '../../utils/constants';
+import ModalInfo from '../ModalInfo/ModalInfo';
 
 function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const history = useHistory(); 
   const location = useLocation();
   const [currentUser, setCurrentUser] = React.useState({});
-  const [email, setEmail] = React.useState('');
-  const [name, setName] = React.useState('');
-  const [movies, setMovies] = React.useState([]);
-  const [getMovie, setGetMovie] = React.useState([]);
-  const localData = JSON.parse(localStorage.getItem('newMassiv'))
+  //const [email, setEmail] = React.useState('');
+  //const [name, setName] = React.useState('');
+  const [movies, setMovies] = React.useState([]); //масси впосле филтрации
+  const [getMovie, setGetMovie] = React.useState([]);//массив сохраненных фильмов
   const [isOpenPreloader, setIsOpenPreloader] = React.useState(false);
   const [messageError, setMessageError] = React.useState('');
   const [serverError, setServerError] = React.useState('');
   const [moviesData, setMoviesData] = React.useState([]);
-
+  const [showModal, setShowModal] = React.useState(false);
+  const [textsucces, setTextsucces] = React.useState('');
+  const [iconVisual,setIconVisual] = React.useState(false);
+  const [localData, setLocalData] = React.useState(JSON.parse(localStorage.getItem('newMassiv')) || []);
+  
   //Получение данных с сервера
   React.useEffect(() => {
     if(loggedIn) {
-    Promise.all([auth.getContent(), apiFilms.getMovies(), api.getMovies()])
-    .then(([userData, moviesData, SavedCardlist]) => {
-      setCurrentUser(userData);
+    Promise.all([apiFilms.getMovies(), api.getMovies()])
+    .then(([ moviesData, SavedCardlist]) => {
       setMoviesData(moviesData)
       setGetMovie(SavedCardlist)
     })
@@ -50,28 +53,28 @@ function App() {
 //Получение токена при какждом мониторовании
   React.useEffect(()=>{
     tokenCheck();
-    setServerError('')
   }, [])
 
+
   React.useEffect(()=>{
-    if(localData) {
       setMovies(localData) 
-    } else {
-      setMovies(moviesData)
-    }
-  }, [ loggedIn, setMovies, moviesData ])
+  }, [ setMovies, moviesData, localData ])
 
 //Регистрация пользователя
   function onRegister( email,password, name ) {
     auth.register(name, email, password)
     .then((res) => {
       if(res){
-        onLogin(email,password)
-        history.push('/') 
+        setShowModal(true);
+        onLogin(email,password);
+        history.push('/');
       }
+      setShowModal(true)
+      setIconVisual(true)
+      setTextsucces(succesOk.signinOk)
     })
     .catch(err => {
-      if(err = authErrors.conflictErr) { 
+      if(err === authErrors.conflictErr) { 
         setServerError('Пользователь с таким email уже существует')
       } else {
         setServerError('При регистрации пользователя произошла ошибка.')
@@ -86,11 +89,15 @@ function onLogin(email,password){
     tokenCheck();
   })
   .catch(err => { 
-    if(err = authErrors.unauthorizedErr) { 
-      setServerError('Ошибка авторизации. Неверный email или пароль')
-    } else {
-      setServerError('При авторизации произошла ошибка. Токен не передан или передан не в том формате.')
+    if(err === authErrors.unauthorizedErr) { 
+      setIconVisual(false)
+      setShowModal(true)
+      setTextsucces(errorMessage.emailandPasswordError)
       
+    } else {
+      setIconVisual(false)
+      setShowModal(true)
+      setTextsucces(errorMessage.tokenError) 
     } 
   });
 }
@@ -100,16 +107,26 @@ function handleEditProfile(email, name) {
   setIsOpenPreloader(true)
   auth.editContent(email, name)
   .then((res) => {
-    setName(res.name)
-    setEmail(res.email)
+    setCurrentUser({
+      name: res.name,
+      email: res.email
+    })
     setIsOpenPreloader(false)
+    setIconVisual(true)
+    setShowModal(true)
+    setTextsucces(succesOk.changeInfoUser)
   })
   .catch(err => {
     setIsOpenPreloader(false)
-    if(err = authErrors.badRequestErr) { 
-      setServerError('При обновлении профиля произошла ошибка.')
+    if(err === 402) { 
+      setIconVisual(false)
+      setShowModal(true)
+      setTextsucces(errorMessage.badRequestErr)
+      
     } else {
-      setServerError('На сервере произошла ошибка.')
+      setIconVisual(false)
+      setShowModal(true)
+      setTextsucces(errorMessage.internalServerErr)
       console.log(`При обновлении профиля произошла ошибка: ${err}`)
     } 
   });
@@ -120,8 +137,11 @@ function tokenCheck() {
   auth.getContent()
   .then((res) => {
     if(res){
-      setName(res.name)
-      setEmail(res.email)
+      setCurrentUser({
+        name: res.name,
+        email: res.email,
+        _id: res._id
+      });
       setLoggedIn(true)
       if (location.pathname === '/signin' || location.pathname === '/signup') {
         history.push('/movies');
@@ -137,10 +157,19 @@ function tokenCheck() {
 function onSignOut(){
   auth.signOut()
   .then(()=> {
+    localStorage.clear();
+    setMoviesData([])
+    setGetMovie([])
+    setMovies([])
     history.push('/');
     setLoggedIn(false)
   })
   .catch(err => console.log(`Не удалось выйти из системы: ${err}`)) 
+}
+
+//закрытие модального окна
+function handlerClose() {
+  setShowModal(false)
 }
 
 //фильтр по чексбоксу в сохраненных фильмаx
@@ -161,7 +190,7 @@ function handleChangeRange(rangeValue) {
   }
 }
 
-//фильтрация по сабмтиту
+//фильтрация по сабмтиту сохраненных фильмов
 function handleClickFiltrSaveMovie(data) {
   if(data.keyword) {
     setMessageError('')
@@ -193,6 +222,7 @@ function handleClickRange(arr, rangeValue, setconst) {
   setconst(newMassiv)
 }
 
+
 //Запрос всех фильмов со стороннего Api
 function habdlerSearchMoviesServer(data) {
   if (data.keyword) {
@@ -206,6 +236,8 @@ function habdlerSearchMoviesServer(data) {
     } else {
       setIsOpenPreloader(false)
       setMessageError(infoMessage.dontFindMovie)
+      //удалить массив из локалки
+      setLocalData([])
     }
   } else {
     setMessageError(errorMessage.keywordNull)
@@ -235,14 +267,19 @@ function handleGetSaveMovies() {
 
 //Удаление карточек из сохраненныx
 function handleDeleteMovie (movie) {
-  api.deleteMovie(movie._id)
+  const usersaved = getMovie.find(i => i.movieId === movie.id);
+  
+  if(usersaved) {
+  api.deleteMovie(usersaved._id)
   .then((movie) => {
     console.log(`Фильм успешно удален`)
     setGetMovie((getMovie)=> getMovie.filter((c) => c.movieId !== movie.movieId
      ))
   })
-   
   .catch(err => console.log(`Ошибка при удалении карточки: ${err}`))
+}else {
+  console.log('fjdk')
+}
 }
 
   return (
@@ -278,6 +315,7 @@ function handleDeleteMovie (movie) {
           onSearch={habdlerSearchMoviesServer}
           onRange={handleChangeRange}
           messageError={messageError}
+          onMovieDelete={handleDeleteMovie}
         />
 
         <ProtectedRoute
@@ -299,8 +337,6 @@ function handleDeleteMovie (movie) {
           title="Привет, Виталий!"
           logOut={onSignOut}
           loggedIn={loggedIn}
-          email={email}
-          name={name}
           onEditProfile={handleEditProfile}
         />
         <Route path='*'>
@@ -309,6 +345,12 @@ function handleDeleteMovie (movie) {
       </Switch>
       <Footer loggedIn={loggedIn}/>
     </div>
+    <ModalInfo
+    isOpen={showModal}
+    textError={textsucces}
+    onClose={handlerClose}
+    icon={iconVisual}
+     />
     
   </CurrentUserContext.Provider>
   );

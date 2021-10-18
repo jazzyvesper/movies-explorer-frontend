@@ -14,6 +14,22 @@
   height: 190px;;
 }
 
+.card__image__trailer-link {
+  position: relative;
+  display: block;
+  transition: .3s linear;
+}
+
+.card__image__trailer-link::before {
+  content: '';
+  position: absolute;
+  border: 40px solid transparent;
+  border-left: 40px solid rgba(0, 0, 0, .3);
+  transition: .3s linear;
+  visibility: hidden;
+  opacity: 0;
+}
+
 .card__button {
   display: none;
 }

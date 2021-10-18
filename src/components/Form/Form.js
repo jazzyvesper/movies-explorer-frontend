@@ -28,7 +28,7 @@ function Form(props) {
           <label className="input__label" htmlFor="password">Пароль</label>
           <input 
           autoComplete="off" 
-          type="text" 
+          type="password" 
           onChange={props.onChange} 
           value={props.password} 
           placeholder="" 
