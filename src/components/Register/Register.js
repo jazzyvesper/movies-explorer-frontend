@@ -5,10 +5,10 @@ import {useFormValidation} from '../Validator.js';
 import {pattern} from '../../utils/constants';
 
 function Register(props) {
+  const submitAuth = props.submitAuth;
   const { values, handleChange, errors, isValid } = useFormValidation({
     email: '', password: '' });
-  const submitDisabled = values.email === '' || values.password === '' || !isValid;
-  
+  const submitDisabled = values.email === '' || values.password === '' || !isValid || submitAuth;
   
   function handleSubmit(e) {
     e.preventDefault();
@@ -30,14 +30,14 @@ function Register(props) {
     errorsEmail={errors.email}
     errorsPassword={errors.password}
     submitDisabled={submitDisabled}
-    serverError={props.serverError}
     >
     <label className="input__label" htmlFor="name">Имя</label>
     <input 
     onChange={handleChange} 
     autoComplete="off" 
     value={values.name} 
-    type="text"className="form__item form__item_type_name" 
+    type="text"
+    className="form__item form__item_type_name" 
     name="name" 
     id="name" 
     required 
@@ -45,8 +45,7 @@ function Register(props) {
     maxLength="40"
     pattern={pattern.name}
     />
-    {errors.name && <span className="email-error form__item-error">{errors.name}</span>}
-          
+    {errors.name && <span className="email-error form__item-error">{errors.name}</span>}   
     </Form>    
   )
 }

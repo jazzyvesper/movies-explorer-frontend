@@ -4,16 +4,14 @@ import './Login.css'
 import {useFormValidation} from '../Validator.js';
 
 function Login(props) {
-
+  const submitAuth = props.submitAuth;
   const { values, handleChange, errors, isValid } = useFormValidation({
     email: '', password: '' });
-  const submitDisabled = values.email === '' || values.password === '' || !isValid;
-  
-  
+  const submitDisabled = values.email === '' || values.password === '' || !isValid || submitAuth;
+ 
   function handleSubmit(e) {
     e.preventDefault();
     props.onLogin(values.email, values.password);
-  
   } 
 
   return (

@@ -11,8 +11,11 @@ export const errorMessage = {
   searchError: 'Во время запроса произошла ошибка. Подождите немного и попробуйте ещё раз».',
   keywordNull: "Нужно ввести ключевое слово",
   badRequestErr: 'При обновлении профиля произошла ошибка.',
-  internalServerErr: 'На сервере произошла ошибка.'
+  internalServerErr: 'На сервере произошла ошибка.',
+  emailError: 'Пользователь с таким email уже существует',
+  registrError: 'При регистрации пользователя произошла ошибка.'
 }
+
 
 export const succesOk = {
   changeInfoUser: 'Данные успешно обновлены!',

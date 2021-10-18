@@ -39,7 +39,6 @@ function Form(props) {
           maxLength="40"/>
           {props.errorsPassword && <span className="password-error form__item-error">{props.errorsPassword}</span>}
           
-
         </fieldset>
         {props.serverError && <span className="password-error form__item-error">{props.serverError}</span>}  
         <button disabled={props.submitDisabled ? true : ''} className={`form__button ${props.submitDisabled ? ('form__button_disabled') : 'section__link'}`} type="submit" aria-label={props.buttonName}>{props.buttonName}</button> 

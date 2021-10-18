@@ -28,11 +28,11 @@ function App() {
   const [getMovie, setGetMovie] = React.useState([]);//массив сохраненных фильмов
   const [isOpenPreloader, setIsOpenPreloader] = React.useState(false);
   const [messageError, setMessageError] = React.useState('');
-  const [serverError, setServerError] = React.useState('');
   const [moviesData, setMoviesData] = React.useState([]);
   const [showModal, setShowModal] = React.useState(false);
   const [textsucces, setTextsucces] = React.useState('');
   const [iconVisual,setIconVisual] = React.useState(false);
+  const [submitBlock, setSubmitBlock] = React.useState(false);
   let getLocaldata = JSON.parse(localStorage.getItem('newMassiv'));
  
   //Получение данных с сервера
@@ -65,9 +65,11 @@ function App() {
 
 //Регистрация пользователя
   function onRegister( email,password, name ) {
+    setSubmitBlock(true)
     auth.register(name, email, password)
     .then((res) => {
       if(res){
+
         setShowModal(true);
         onLogin(email,password);
         history.push('/');
@@ -75,18 +77,25 @@ function App() {
       setShowModal(true)
       setIconVisual(true)
       setTextsucces(succesOk.signinOk)
+      setSubmitBlock(false)
     })
     .catch(err => {
       if(err === authErrors.conflictErr) { 
-        setServerError('Пользователь с таким email уже существует')
+        setShowModal(true)
+        setIconVisual(false)
+        setTextsucces(errorMessage.emailError)
       } else {
-        setServerError('При регистрации пользователя произошла ошибка.')
+        setShowModal(true)
+        setIconVisual(false)
+        setTextsucces(errorMessage.registrError)
+        
       }
     });
   }
 
 //Вход в профиль
 function onLogin(email,password){
+  setSubmitBlock(true)
   auth.authorize(email, password)
   .then(() => {
     tokenCheck();
@@ -108,6 +117,7 @@ function onLogin(email,password){
 //Изменение данных пользователя
 function handleEditProfile(email, name) {
   setIsOpenPreloader(true)
+  setSubmitBlock(true)
   auth.editContent(email, name)
   .then((res) => {
     setCurrentUser({
@@ -173,6 +183,7 @@ function onSignOut(){
 //закрытие модального окна
 function handlerClose() {
   setShowModal(false)
+  setSubmitBlock(false)
 }
 
 //фильтрация по сабмтиту сохраненных фильмов
@@ -204,7 +215,6 @@ function handleClickFiltrSaveMovie(data) {
 //фильтрация всех фильмов со стороннего Api
 function habdlerSearchMoviesServer(data) {
   if (data.keyword) {
-    console.log('тут')
     setMessageError('')
     setIsOpenPreloader(true)
     const newMassiv = filtrKey(moviesData, data)
@@ -213,7 +223,6 @@ function habdlerSearchMoviesServer(data) {
       localStorage.setItem("newMassiv", JSON.stringify(newMassiv));
       setMovies(newMassiv)
     } else {
-      console.log('z pltcm')
       setMovies([])
       setIsOpenPreloader(false)
       setMessageError(infoMessage.dontFindMovie)
@@ -261,14 +270,14 @@ function handleDeleteMovie (movie) {
         <Route path="/signup"> 
           <Register
           onRegister={onRegister}
-          serverError={serverError}
+          submitAuth={submitBlock}
         />
         </Route>
         <Route path="/signin"> 
           <Login 
           onLogin={onLogin}
           loggedIn={loggedIn}
-          serverError={serverError}
+          submitAuth={submitBlock}
           />
         </Route>
         <ProtectedRoute
@@ -304,6 +313,7 @@ function handleDeleteMovie (movie) {
           logOut={onSignOut}
           loggedIn={loggedIn}
           onEditProfile={handleEditProfile}
+          submitAuth={submitBlock}
         />
         <Route path='*'>
           <NotFound />

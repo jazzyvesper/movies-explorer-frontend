@@ -9,9 +9,10 @@ function ProfileForm(props) {
   const currentUser = React.useContext(CurrentUserContext);
   const { values, handleChange, errors, isValid } = useFormValidation({
     name: currentUser.name, email: currentUser.email });
+  const submitAuth = props.submitAuth
   const submitDisabled = values.email === '' || values.name === '' || 
   ( values.name === currentUser.name && values.email === currentUser.email )
-  || !isValid;
+  || !isValid || submitAuth;
   const [isDisabled, setIsDisabled] = React.useState(true);
 
   function handleEditProfile() {
