@@ -34,13 +34,7 @@ function App() {
   const [textsucces, setTextsucces] = React.useState('');
   const [iconVisual,setIconVisual] = React.useState(false);
   let getLocaldata = JSON.parse(localStorage.getItem('newMassiv'));
-  
-  
-  console.log('getLocaldata')
-  console.log(getLocaldata)
-  console.log('movies')
-  console.log(movies)
-
+ 
   //Получение данных с сервера
   React.useEffect(() => {
     if(loggedIn) {
